@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e8497480afc740438fa6fa3c17619afb" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="PBinModel.Post" Width="1.5" PointX="2.875" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PBinModel.Role" Width="1.5" PointX="3.875" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PBinModel.SharedPost" Width="1.5" PointX="5.625" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PBinModel.User" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PBinModel.UserRole" Width="1.5" PointX="0.625" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="PBinModel.WatchWord" Width="1.5" PointX="7.625" PointY="4.875" IsExpanded="true" />
+        <AssociationConnector Association="PBinModel.FK__Post__UserId__6A30C649" ManuallyRouted="false" />
+        <AssociationConnector Association="PBinModel.FK__SharedPos__PostI__72C60C4A" ManuallyRouted="false" />
+        <AssociationConnector Association="PBinModel.FK__UserRole__RoleId__787EE5A0" ManuallyRouted="false" />
+        <AssociationConnector Association="PBinModel.FK__SharedPos__Share__73BA3083" ManuallyRouted="false" />
+        <AssociationConnector Association="PBinModel.FK__UserRole__UserId__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="PBinModel.FK__WatchWord__UserI__6D0D32F4" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
