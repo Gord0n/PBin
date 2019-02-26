@@ -10,6 +10,7 @@ namespace PBin.Controllers
     {
         public ActionResult Index()
         {
+            //Test
             return View();
         }
 
