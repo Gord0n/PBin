@@ -14,28 +14,47 @@ namespace PBin.Controllers
 
         PBinEntities db = new PBinEntities();
 
-        public ActionResult LogIn()
+        [Route("Home")]
+        public ActionResult Home()
+        {
+
+            return View();
+        }
+
+        [Route("Login")]
+        public ActionResult Login()
         {                        
 
             return View();
         }
 
         [HttpPost]
-        public ActionResult LogIn(string Email, string Password)
+        public ActionResult Login(string Email, string Password)
         {
-            string userSalt = db.User.Where(o => o.Email == Email).FirstOrDefault().Salt;          
+            User requestedUser = db.User.Where(o => o.Email == Email).FirstOrDefault();
+            string userSalt = requestedUser.Salt;          
             string providedPassword = Convert.ToBase64String(Encoding.UTF8.GetBytes(Password).Concat(Encoding.UTF8.GetBytes(userSalt)).ToArray());
 
-            string userPassword = db.User.Where(o => o.Email == Email).FirstOrDefault().Password;
+            string userPassword = requestedUser.Password;
 
             if (providedPassword.Equals(userPassword))
             {
+                Session["UserId"] = requestedUser.Id;
                 return RedirectToAction("FrontPage", "Home");
             } else
             {
                 return RedirectToAction("Login", "Home");
             }
             
+        }
+
+        //Kills session and brings user to home page
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            Session["UserId"] = null;            
+
+            return View("Login");
         }
 
         //Creates a new user
