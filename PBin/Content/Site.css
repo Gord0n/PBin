@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 5px;
     padding-bottom: 20px;
 }
 
@@ -18,7 +18,22 @@
 
 /* Set width on the form input elements since they're 100% wide by default */
 input,
-select,
-textarea {
+select {
     max-width: 280px;
+}
+
+.input-group input {
+    max-width: 100%;
+    width: 100%;
+}
+
+.input-group span {
+    min-width: 200px;
+}
+
+.input-group textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    height: 200px;
 }

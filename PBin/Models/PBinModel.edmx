@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PBinModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="PBinModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Post">
           <Key>
             <PropertyRef Name="Id" />
@@ -39,7 +39,8 @@
           </Key>
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="128" Nullable="false" />
-          <Property Name="Password" Type="varchar" MaxLength="128" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="512" Nullable="false" />
+          <Property Name="Salt" Type="varchar" MaxLength="512" Nullable="false" />
           <Property Name="DateCreated" Type="datetime" />
           <Property Name="FirstName" Type="varchar" MaxLength="64" />
           <Property Name="LastName" Type="varchar" MaxLength="64" />
@@ -61,7 +62,7 @@
           <Property Name="UserId" Type="uniqueidentifier" />
           <Property Name="Word" Type="varchar" MaxLength="64" />
         </EntityType>
-        <Association Name="FK__Post__UserId__6A30C649">
+        <Association Name="FK__Post__UserId__3587F3E0">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Post" Type="Self.Post" Multiplicity="*" />
           <ReferentialConstraint>
@@ -73,7 +74,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SharedPos__PostI__72C60C4A">
+        <Association Name="FK__SharedPos__PostI__3B40CD36">
           <End Role="Post" Type="Self.Post" Multiplicity="0..1" />
           <End Role="SharedPost" Type="Self.SharedPost" Multiplicity="*" />
           <ReferentialConstraint>
@@ -85,7 +86,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SharedPos__Share__73BA3083">
+        <Association Name="FK__SharedPos__Share__3C34F16F">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="SharedPost" Type="Self.SharedPost" Multiplicity="*" />
           <ReferentialConstraint>
@@ -97,7 +98,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserRole__RoleId__787EE5A0">
+        <Association Name="FK__UserRole__RoleId__40F9A68C">
           <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
           <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
           <ReferentialConstraint>
@@ -109,7 +110,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserRole__UserId__797309D9">
+        <Association Name="FK__UserRole__UserId__41EDCAC5">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
           <ReferentialConstraint>
@@ -121,7 +122,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__WatchWord__UserI__6D0D32F4">
+        <Association Name="FK__WatchWord__UserI__3864608B">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="WatchWord" Type="Self.WatchWord" Multiplicity="*" />
           <ReferentialConstraint>
@@ -140,33 +141,32 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WatchWord" EntityType="Self.WatchWord" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Post__UserId__6A30C649" Association="Self.FK__Post__UserId__6A30C649">
+          <AssociationSet Name="FK__Post__UserId__3587F3E0" Association="Self.FK__Post__UserId__3587F3E0">
             <End Role="User" EntitySet="User" />
             <End Role="Post" EntitySet="Post" />
           </AssociationSet>
-          <AssociationSet Name="FK__SharedPos__PostI__72C60C4A" Association="Self.FK__SharedPos__PostI__72C60C4A">
+          <AssociationSet Name="FK__SharedPos__PostI__3B40CD36" Association="Self.FK__SharedPos__PostI__3B40CD36">
             <End Role="Post" EntitySet="Post" />
             <End Role="SharedPost" EntitySet="SharedPost" />
           </AssociationSet>
-          <AssociationSet Name="FK__SharedPos__Share__73BA3083" Association="Self.FK__SharedPos__Share__73BA3083">
+          <AssociationSet Name="FK__SharedPos__Share__3C34F16F" Association="Self.FK__SharedPos__Share__3C34F16F">
             <End Role="User" EntitySet="User" />
             <End Role="SharedPost" EntitySet="SharedPost" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserRole__RoleId__787EE5A0" Association="Self.FK__UserRole__RoleId__787EE5A0">
+          <AssociationSet Name="FK__UserRole__RoleId__40F9A68C" Association="Self.FK__UserRole__RoleId__40F9A68C">
             <End Role="Role" EntitySet="Role" />
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserRole__UserId__797309D9" Association="Self.FK__UserRole__UserId__797309D9">
+          <AssociationSet Name="FK__UserRole__UserId__41EDCAC5" Association="Self.FK__UserRole__UserId__41EDCAC5">
             <End Role="User" EntitySet="User" />
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
-          <AssociationSet Name="FK__WatchWord__UserI__6D0D32F4" Association="Self.FK__WatchWord__UserI__6D0D32F4">
+          <AssociationSet Name="FK__WatchWord__UserI__3864608B" Association="Self.FK__WatchWord__UserI__3864608B">
             <End Role="User" EntitySet="User" />
             <End Role="WatchWord" EntitySet="WatchWord" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PBinModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -209,7 +209,7 @@
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="512" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="DateCreated" Type="DateTime" Precision="3" />
           <Property Name="FirstName" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
           <Property Name="LastName" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
@@ -218,6 +218,7 @@
           <NavigationProperty Name="SharedPost" Relationship="Self.FK__SharedPos__Share__73BA3083" FromRole="User" ToRole="SharedPost" />
           <NavigationProperty Name="UserRole" Relationship="Self.FK__UserRole__UserId__797309D9" FromRole="User" ToRole="UserRole" />
           <NavigationProperty Name="WatchWord" Relationship="Self.FK__WatchWord__UserI__6D0D32F4" FromRole="User" ToRole="WatchWord" />
+          <Property Name="Salt" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="UserRole">
           <Key>
@@ -382,6 +383,7 @@
           <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="PBinModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Salt" ColumnName="Salt" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

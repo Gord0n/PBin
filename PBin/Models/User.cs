@@ -29,6 +29,7 @@ namespace PBin.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Nullable<bool> Active { get; set; }
+        public string Salt { get; set; }
     
         public virtual ICollection<Post> Post { get; set; }
         public virtual ICollection<SharedPost> SharedPost { get; set; }
