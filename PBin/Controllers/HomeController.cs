@@ -13,7 +13,6 @@ namespace PBin.Controllers
     {
 
         PBinEntities db = new PBinEntities();
-
         
         [Route("Home")]
         [Route("~/", Name = "default")]
@@ -31,6 +30,7 @@ namespace PBin.Controllers
         }
 
         [HttpPost]
+        [Route("Login")]
         public ActionResult Login(string Email, string Password)
         {
             User requestedUser = db.User.Where(o => o.Email == Email).FirstOrDefault();
@@ -51,11 +51,12 @@ namespace PBin.Controllers
 
         //Kills session and brings user to home page
         [HttpGet]
+        [Route("Logout")]
         public ActionResult Logout()
         {
             Session["UserId"] = null;            
 
-            return View("Login");
+            return RedirectToAction("Home", "Home");
         }
 
         /* Creates a new user
@@ -63,6 +64,7 @@ namespace PBin.Controllers
          * 
          */
         [HttpPost]
+        [Route("CreateUser")]
         public ActionResult CreateUser(User NewUser)
         {
             NewUser.Id = Guid.NewGuid();            
