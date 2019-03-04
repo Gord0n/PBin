@@ -14,7 +14,9 @@ namespace PBin.Controllers
 
         PBinEntities db = new PBinEntities();
 
+        
         [Route("Home")]
+        [Route("~/", Name = "default")]
         public ActionResult Home()
         {
 
@@ -44,8 +46,7 @@ namespace PBin.Controllers
             } else
             {
                 return RedirectToAction("Login", "Home");
-            }
-            
+            }            
         }
 
         //Kills session and brings user to home page
@@ -57,7 +58,10 @@ namespace PBin.Controllers
             return View("Login");
         }
 
-        //Creates a new user
+        /* Creates a new user
+         * 
+         * 
+         */
         [HttpPost]
         public ActionResult CreateUser(User NewUser)
         {
@@ -65,7 +69,7 @@ namespace PBin.Controllers
             NewUser.DateCreated = DateTime.Now;
             NewUser.Active = true;            
             
-            //Creates a salt, appends it to the provided password and then hashes the two values together to create the database hash
+            //Creates a salt, appends it to the provided password and then hashes the two values together to create the database password hash
             NewUser.Salt = GenerateRandomCryptographicKey(256);         
             byte[] byteSaltedPassword = Encoding.UTF8.GetBytes(NewUser.Password).Concat(Encoding.UTF8.GetBytes(NewUser.Salt)).ToArray();
             NewUser.Password = Convert.ToBase64String(byteSaltedPassword);
