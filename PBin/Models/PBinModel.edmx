@@ -12,7 +12,7 @@
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="UserId" Type="uniqueidentifier" />
           <Property Name="Title" Type="varchar" MaxLength="32" />
-          <Property Name="Content" Type="varchar" MaxLength="256" />
+          <Property Name="Content" Type="varchar" MaxLength="1024" />
           <Property Name="DateCreated" Type="datetime" />
           <Property Name="DateExpires" Type="datetime" />
           <Property Name="Public" Type="bit" />
@@ -62,7 +62,7 @@
           <Property Name="UserId" Type="uniqueidentifier" />
           <Property Name="Word" Type="varchar" MaxLength="64" />
         </EntityType>
-        <Association Name="FK__Post__UserId__3587F3E0">
+        <Association Name="FK__Post__UserId__65370702">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Post" Type="Self.Post" Multiplicity="*" />
           <ReferentialConstraint>
@@ -74,7 +74,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SharedPos__PostI__3B40CD36">
+        <Association Name="FK__SharedPos__PostI__6AEFE058">
           <End Role="Post" Type="Self.Post" Multiplicity="0..1" />
           <End Role="SharedPost" Type="Self.SharedPost" Multiplicity="*" />
           <ReferentialConstraint>
@@ -86,7 +86,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SharedPos__Share__3C34F16F">
+        <Association Name="FK__SharedPos__Share__6BE40491">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="SharedPost" Type="Self.SharedPost" Multiplicity="*" />
           <ReferentialConstraint>
@@ -98,7 +98,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserRole__RoleId__40F9A68C">
+        <Association Name="FK__UserRole__RoleId__70A8B9AE">
           <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
           <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
           <ReferentialConstraint>
@@ -110,7 +110,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserRole__UserId__41EDCAC5">
+        <Association Name="FK__UserRole__UserId__719CDDE7">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
           <ReferentialConstraint>
@@ -122,7 +122,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__WatchWord__UserI__3864608B">
+        <Association Name="FK__WatchWord__UserI__681373AD">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="WatchWord" Type="Self.WatchWord" Multiplicity="*" />
           <ReferentialConstraint>
@@ -141,27 +141,27 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WatchWord" EntityType="Self.WatchWord" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Post__UserId__3587F3E0" Association="Self.FK__Post__UserId__3587F3E0">
+          <AssociationSet Name="FK__Post__UserId__65370702" Association="Self.FK__Post__UserId__65370702">
             <End Role="User" EntitySet="User" />
             <End Role="Post" EntitySet="Post" />
           </AssociationSet>
-          <AssociationSet Name="FK__SharedPos__PostI__3B40CD36" Association="Self.FK__SharedPos__PostI__3B40CD36">
+          <AssociationSet Name="FK__SharedPos__PostI__6AEFE058" Association="Self.FK__SharedPos__PostI__6AEFE058">
             <End Role="Post" EntitySet="Post" />
             <End Role="SharedPost" EntitySet="SharedPost" />
           </AssociationSet>
-          <AssociationSet Name="FK__SharedPos__Share__3C34F16F" Association="Self.FK__SharedPos__Share__3C34F16F">
+          <AssociationSet Name="FK__SharedPos__Share__6BE40491" Association="Self.FK__SharedPos__Share__6BE40491">
             <End Role="User" EntitySet="User" />
             <End Role="SharedPost" EntitySet="SharedPost" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserRole__RoleId__40F9A68C" Association="Self.FK__UserRole__RoleId__40F9A68C">
+          <AssociationSet Name="FK__UserRole__RoleId__70A8B9AE" Association="Self.FK__UserRole__RoleId__70A8B9AE">
             <End Role="Role" EntitySet="Role" />
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserRole__UserId__41EDCAC5" Association="Self.FK__UserRole__UserId__41EDCAC5">
+          <AssociationSet Name="FK__UserRole__UserId__719CDDE7" Association="Self.FK__UserRole__UserId__719CDDE7">
             <End Role="User" EntitySet="User" />
             <End Role="UserRole" EntitySet="UserRole" />
           </AssociationSet>
-          <AssociationSet Name="FK__WatchWord__UserI__3864608B" Association="Self.FK__WatchWord__UserI__3864608B">
+          <AssociationSet Name="FK__WatchWord__UserI__681373AD" Association="Self.FK__WatchWord__UserI__681373AD">
             <End Role="User" EntitySet="User" />
             <End Role="WatchWord" EntitySet="WatchWord" />
           </AssociationSet>
@@ -177,7 +177,7 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="UserId" Type="Guid" />
           <Property Name="Title" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="Content" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="Content" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
           <Property Name="DateCreated" Type="DateTime" Precision="3" />
           <Property Name="DateExpires" Type="DateTime" Precision="3" />
           <Property Name="Public" Type="Boolean" />

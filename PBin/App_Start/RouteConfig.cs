@@ -19,8 +19,8 @@ namespace PBin
               "ActionOnly",
               "{action}",
               new { controller = "Home" }
-            );                               
-            
+            );          
+
         }
     }
 }

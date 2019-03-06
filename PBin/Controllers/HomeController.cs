@@ -119,6 +119,7 @@ namespace PBin.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]  // THIS SHOULD NOT STAY HERE REMOVE BEFORE PRODUCTION
         [Route("CreatePost")]
         public ActionResult CreatePost(Post NewPost)
         {           
@@ -145,6 +146,13 @@ namespace PBin.Controllers
 
 
             return RedirectToAction("UserPosts", "Home");
+        }
+
+        [Route("PageNotFound")]
+        public ActionResult PageNotFound()
+        {
+
+            return View();
         }
 
         public bool CheckSession()
