@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Create New Account";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-2 col-sm-8">
+        @using (Html.BeginForm("CreateAccount", "Home", FormMethod.Post, new { @id = "CreateUserForm", enctype = "multipart-form-data" }))
+        {
+            <div class="input-group">
+                <span class="input-group-addon">Email</span>
+                <input type="text" id="NewUser_Email" name="NewUser.Email" class="form-control" />
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">Password</span>
+                <input type="password" id="NewUser_Password" name="NewUser.Password" class="form-control" />
+
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">First Name</span>
+                <input type="text" class="form-control" id="NewUser_FirstName" name="NewUser.FirstName" />
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">Last Name</span>
+                <input type="text" class="form-control" id="NewUser_LastName" name="NewUser.LastName" />
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon text-left" style="width:100%; color: red;"></span>
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

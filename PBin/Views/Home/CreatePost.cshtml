@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Create Paste";
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1>Create a paste</h1>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("CreatePost", "Home", FormMethod.Post, new { @id = "PostForm", enctype = "multipart-form-data" }))
+                {
+                    <div class="input-group">
+                        <span class="input-group-addon">Title</span>
+                        <input type="text" id="NewPost_Title" value="" name="NewPost.Title" class="form-control" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Content</span>
+                        <textarea class="form-control" id="NewPost_Content" name="NewPost.Content"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Expire</span>
+                        <input type="date" class="form-control" id="NewPost_DateExpires" name="NewPost.DateExpires" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon text-left" style="width:100%; color: red;"></span>
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Post</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>      
+    </div>
+</div>

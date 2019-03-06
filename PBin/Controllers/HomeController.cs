@@ -1,4 +1,5 @@
 ﻿using PBin.Models;
+using PBin.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,11 @@ namespace PBin.Controllers
         [Route("~/", Name = "default")]
         public ActionResult Home()
         {
+            HomeViewModel hvm = new HomeViewModel();
 
-            return View();
+            hvm.Posts = db.Post.ToList();
+
+            return View(hvm);
         }
 
         [Route("Login")]
@@ -42,7 +46,8 @@ namespace PBin.Controllers
             if (providedPassword.Equals(userPassword))
             {
                 Session["UserId"] = requestedUser.Id;
-                return RedirectToAction("FrontPage", "Home");
+                Session["Username"] = requestedUser.FirstName + " " + requestedUser.LastName;
+                return RedirectToAction("Home", "Home");
             } else
             {
                 return RedirectToAction("Login", "Home");
@@ -54,9 +59,16 @@ namespace PBin.Controllers
         [Route("Logout")]
         public ActionResult Logout()
         {
-            Session["UserId"] = null;            
-
+            Session["UserId"] = null;
+            Session["Username"] = null;
             return RedirectToAction("Home", "Home");
+        }     
+
+        [Route("CreateAccount")]
+        public ActionResult CreateAccount()
+        {
+
+            return View();
         }
 
         /* Creates a new user
@@ -64,8 +76,8 @@ namespace PBin.Controllers
          * 
          */
         [HttpPost]
-        [Route("CreateUser")]
-        public ActionResult CreateUser(User NewUser)
+        [Route("CreateAccount")]
+        public ActionResult CreateAccount(User NewUser)
         {
             NewUser.Id = Guid.NewGuid();            
             NewUser.DateCreated = DateTime.Now;
@@ -99,5 +111,52 @@ namespace PBin.Controllers
             return Convert.ToBase64String(randomBytes);
         }
 
+        [Route("CreatePost")]
+        public ActionResult CreatePost()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        [Route("CreatePost")]
+        public ActionResult CreatePost(Post NewPost)
+        {           
+            if (!CheckSession())
+            {
+                return RedirectToAction("Home", "Home");
+            }
+            NewPost.Id = Guid.NewGuid();
+            NewPost.DateCreated = DateTime.Now;
+            NewPost.Public = true;
+            NewPost.Enabled = true;
+            NewPost.UserId = (Guid)Session["UserId"];
+
+            db.Post.Add(NewPost);
+
+            try
+            {
+                db.SaveChanges();
+            } catch (Exception ex)
+            {
+                //Throw error
+                return RedirectToAction("CreatePost", "Home"); //need status report here
+            }
+
+
+            return RedirectToAction("UserPosts", "Home");
+        }
+
+        public bool CheckSession()
+        {
+            if (Session["UserId"] != null)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+            
+        }
     }
 }
