@@ -34,7 +34,7 @@ namespace PBin.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
+        [Route("Login")]        
         public ActionResult Login(string Email, string Password)
         {
             User requestedUser = db.User.Where(o => o.Email == Email).FirstOrDefault();
@@ -47,6 +47,18 @@ namespace PBin.Controllers
             {
                 Session["UserId"] = requestedUser.Id;
                 Session["Username"] = requestedUser.FirstName + " " + requestedUser.LastName;
+
+                List<UserRole> userRoles = db.UserRole.Where(o => o.UserId == requestedUser.Id).ToList();
+                Guid adminRoleId = db.Role.Where(o => o.Role1 == "Administrator").FirstOrDefault().Id;
+
+                if (userRoles.Select(o => o.RoleId).Contains(adminRoleId))
+                {
+                    Session["IsAdmin"] = true;
+                } else
+                {
+                    Session["IsAdmin"] = false;                       
+                }                              
+
                 return RedirectToAction("Home", "Home");
             } else
             {
@@ -61,10 +73,11 @@ namespace PBin.Controllers
         {
             Session["UserId"] = null;
             Session["Username"] = null;
+            Session["IsAdmin"] = null;
             return RedirectToAction("Home", "Home");
         }     
 
-        [Route("CreateAccount")]
+        [Route("CreateAccount")]        
         public ActionResult CreateAccount()
         {
 
@@ -88,8 +101,15 @@ namespace PBin.Controllers
             byte[] byteSaltedPassword = Encoding.UTF8.GetBytes(NewUser.Password).Concat(Encoding.UTF8.GetBytes(NewUser.Salt)).ToArray();
             NewUser.Password = Convert.ToBase64String(byteSaltedPassword);
 
-            db.User.Add(NewUser); 
-            
+            UserRole NewRole = new UserRole() {
+                Id = Guid.NewGuid(),
+                RoleId = db.Role.Where(o=>o.Role1 == "User").FirstOrDefault().Id,
+                UserId = NewUser.Id
+            };
+
+            db.User.Add(NewUser);
+            db.UserRole.Add(NewRole);
+
             try
             {
                 db.SaveChanges();
@@ -110,28 +130,33 @@ namespace PBin.Controllers
             rngCryptoServiceProvider.GetBytes(randomBytes);
             return Convert.ToBase64String(randomBytes);
         }
-
+        
         [Route("CreatePost")]
         public ActionResult CreatePost()
         {
+            if (!AuthorizeUser())
+            {
+                return RedirectToAction("Home", "Home");
+            }
 
             return View();
         }
 
-        [HttpPost]
+        [HttpPost]        
         [ValidateInput(false)]  // THIS SHOULD NOT STAY HERE REMOVE BEFORE PRODUCTION
         [Route("CreatePost")]
         public ActionResult CreatePost(Post NewPost)
         {           
-            if (!CheckSession())
+            if (!AuthorizeUser())
             {
                 return RedirectToAction("Home", "Home");
             }
+
             NewPost.Id = Guid.NewGuid();
             NewPost.DateCreated = DateTime.Now;
             NewPost.Public = true;
             NewPost.Enabled = true;
-            NewPost.UserId = (Guid)Session["UserId"];
+            NewPost.UserId = (Guid)Session["UserId"];            
 
             db.Post.Add(NewPost);
 
@@ -148,23 +173,47 @@ namespace PBin.Controllers
             return RedirectToAction("UserPosts", "Home");
         }
 
+        [Route("UserList")]
+        public ActionResult UserList()
+        {
+            if (!AuthorizeAdmin())
+            {
+                return RedirectToAction("PageNotFound", "Home");
+            }
+
+            return View();
+        }
+
         [Route("PageNotFound")]
         public ActionResult PageNotFound()
         {
 
             return View();
-        }
+        }      
 
-        public bool CheckSession()
-        {
+        public bool AuthorizeUser()
+        {           
             if (Session["UserId"] != null)
             {
                 return true;
+            }
+            else
+            {
+                return false;
+            }            
+        }
+
+        public bool AuthorizeAdmin()
+        {
+            if (Session["UserId"] != null)
+            {
+                return ((bool)Session["IsAdmin"]);                                                    
+
             } else
             {
                 return false;
             }
-            
         }
+
     }
 }
