@@ -21,12 +21,13 @@ namespace PBin.Controllers
         {
             HomeViewModel hvm = new HomeViewModel();
 
-            hvm.Posts = db.Post.ToList();
+            hvm.Posts = db.Post.Where(o=>o.Public == true).OrderByDescending(o=>o.DateCreated).Take(10).ToList();
 
             return View(hvm);
         }
 
         [Route("Login")]
+        [Route("AdminLogin")]
         public ActionResult Login()
         {                        
 
@@ -34,7 +35,8 @@ namespace PBin.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]        
+        [Route("Login")] 
+        [Route("AdminLogin")]
         public ActionResult Login(string Email, string Password)
         {
             User requestedUser = db.User.Where(o => o.Email == Email).FirstOrDefault();
@@ -64,7 +66,7 @@ namespace PBin.Controllers
             {
                 return RedirectToAction("Login", "Home");
             }            
-        }
+        }    
 
         //Kills session and brings user to home page
         [HttpGet]
@@ -74,6 +76,7 @@ namespace PBin.Controllers
             Session["UserId"] = null;
             Session["Username"] = null;
             Session["IsAdmin"] = null;
+
             return RedirectToAction("Home", "Home");
         }     
 

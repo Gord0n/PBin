@@ -8,10 +8,17 @@
         <div class="col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1>@Model.Posts[i].Title</h1>
+                    @if (Model.Posts[i].Title != null)
+                    {
+                        <h1>@Model.Posts[i].Title</h1>
+                    } else
+                    {
+                        <h1><a href="@Url.Action("THING", "Home")">Untitled</a></h1>
+                    }
+                    <p>@Model.Posts[i].User.FirstName @Model.Posts[i].User.LastName @@ @Model.Posts[i].DateCreated</p>
                 </div>
                 <div class="panel-body">
-                    <p>@Model.Posts[i].Content</p>
+                    <pre>@Model.Posts[i].Content</pre>
                 </div>
             </div>                
         </div>

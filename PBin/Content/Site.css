@@ -37,3 +37,11 @@ select {
     min-width: 100% !important;
     height: 200px;
 }
+
+.panel-heading p {
+    margin: 0 0 0;
+}
+
+.panel-heading h1 {
+    
+}
