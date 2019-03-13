@@ -11,6 +11,7 @@
 <body>
     <script src="~/Scripts/jquery-3.3.1.js"></script>
     <script src="~/Scripts/CustomScript.js"></script>
+    <script src="~/Scripts/PScript.js"></script>
     <div class="container body-content">
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -58,6 +59,7 @@
 
     </div>
     <div class="container">
+        <div id="feedback" class='col-xs-12' style='display:none'>@ViewBag.Feedback</div>
         @RenderBody()
     </div>
 

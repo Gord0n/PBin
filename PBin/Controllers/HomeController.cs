@@ -22,6 +22,7 @@ namespace PBin.Controllers
             HomeViewModel hvm = new HomeViewModel();
 
             hvm.Posts = db.Post.Where(o=>o.Public == true).OrderByDescending(o=>o.DateCreated).Take(10).ToList();
+            ViewBag.Feedback = "WHAT IS GOING ON UP HERE?!";
 
             return View(hvm);
         }
@@ -40,6 +41,13 @@ namespace PBin.Controllers
         public ActionResult Login(string Email, string Password)
         {
             User requestedUser = db.User.Where(o => o.Email == Email).FirstOrDefault();
+
+            if (requestedUser == null)
+            {
+                ViewBag.Feedback = "Error: Could not login.";
+                return RedirectToAction("Login", "Home");
+            }
+
             string userSalt = requestedUser.Salt;          
             string providedPassword = Convert.ToBase64String(Encoding.UTF8.GetBytes(Password).Concat(Encoding.UTF8.GetBytes(userSalt)).ToArray());
 
@@ -64,6 +72,7 @@ namespace PBin.Controllers
                 return RedirectToAction("Home", "Home");
             } else
             {
+                ViewBag.Feedback = "Error: Could not log in";
                 return RedirectToAction("Login", "Home");
             }            
         }    
