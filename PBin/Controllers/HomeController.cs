@@ -16,23 +16,27 @@ namespace PBin.Controllers
         PBinEntities db = new PBinEntities();
         
         [Route("Home")]
+    
         [Route("~/", Name = "default")]
-        public ActionResult Home()
+        public ActionResult Home(string sts)
         {
-            HomeViewModel hvm = new HomeViewModel();
+            HomeViewModel hvm = new HomeViewModel() { sts = sts };
 
-            hvm.Posts = db.Post.Where(o=>o.Public == true).OrderByDescending(o=>o.DateCreated).Take(10).ToList();
-            ViewBag.Feedback = "WHAT IS GOING ON UP HERE?!";
+            hvm.Posts = db.Post.Where(o=>o.Public == true).OrderByDescending(o=>o.DateCreated).Take(10).ToList();            
 
             return View(hvm);
         }
 
         [Route("Login")]
-        [Route("AdminLogin")]
-        public ActionResult Login()
-        {                        
+        [Route("AdminLogin")]        
+        public ActionResult Login(string sts)
+        {
+            LoginViewModel lvm = new LoginViewModel()
+            {
+                sts = sts
+            };
 
-            return View();
+            return View(lvm);
         }
 
         [HttpPost]
@@ -44,8 +48,7 @@ namespace PBin.Controllers
 
             if (requestedUser == null)
             {
-                ViewBag.Feedback = "Error: Could not login.";
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Login", "Home", new { sts = "Error: Could not log in" });
             }
 
             string userSalt = requestedUser.Salt;          
@@ -71,9 +74,8 @@ namespace PBin.Controllers
 
                 return RedirectToAction("Home", "Home");
             } else
-            {
-                ViewBag.Feedback = "Error: Could not log in";
-                return RedirectToAction("Login", "Home");
+            {                
+                return RedirectToAction("Login", "Home", new { sts = "Error: Could not log in" });
             }            
         }    
 
@@ -90,10 +92,14 @@ namespace PBin.Controllers
         }     
 
         [Route("CreateAccount")]        
-        public ActionResult CreateAccount()
+        public ActionResult CreateAccount(CreateAccountViewModel cavm)
         {
+            if (cavm.NewUser == null)
+            {
+                cavm.NewUser = new User();
+            }            
 
-            return View();
+            return View(cavm);
         }
 
         /* Creates a new user
@@ -106,8 +112,35 @@ namespace PBin.Controllers
         {
             NewUser.Id = Guid.NewGuid();            
             NewUser.DateCreated = DateTime.Now;
-            NewUser.Active = true;            
-            
+            NewUser.Active = true;
+
+            CreateAccountViewModel cavm = new CreateAccountViewModel() { NewUser = NewUser };
+
+            if (NewUser.Email == null)
+            {
+                cavm.sts = "Please provide an Email Address";
+                return View(cavm);
+            }
+
+            if (NewUser.Password == null)
+            {
+                cavm.sts = "Please provide a Password";
+                return View(cavm);
+            }
+
+            if (NewUser.FirstName == null)
+            {
+                cavm.sts = "Please provide a First Name";
+                return View(cavm);
+            }
+
+            if (NewUser.LastName == null)
+            {
+                cavm.sts = "Please provide a Last Name";
+                return View(cavm);
+            }
+
+         
             //Creates a salt, appends it to the provided password and then hashes the two values together to create the database password hash
             NewUser.Salt = GenerateRandomCryptographicKey(256);         
             byte[] byteSaltedPassword = Encoding.UTF8.GetBytes(NewUser.Password).Concat(Encoding.UTF8.GetBytes(NewUser.Salt)).ToArray();

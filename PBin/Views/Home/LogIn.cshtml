@@ -1,4 +1,5 @@
-﻿@{  
+﻿@model PBin.Models.ViewModels.LoginViewModel
+@{  
     ViewBag.Title = "Login";
 }   
 <div class="row">
@@ -31,3 +32,4 @@
         </div>
     </div>
 </div>
+<div id="feedback" class='col-xs-12' style='display:none'>@Model.sts</div>
