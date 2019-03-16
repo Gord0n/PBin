@@ -1,0 +1,43 @@
+﻿@model PBin.Models.ViewModels.EditSettingsViewModel
+@{
+    ViewBag.Title = "Settings";
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-9">
+                        <h1>Account Settings</h1>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <a href="@Url.Action("DeleteAccount", "Home", new { UserId = Model.User.Id })" class="btn btn-danger">Delete Account</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("EditSettings", "Home", FormMethod.Post, new { @id = "editPostForm", enctype = "multipart-form-data" }))
+                {
+                    <div class="input-group">
+                        <span class="input-group-addon">First Name</span>
+                        <input type="text" id="FirstName" value="@Model.User.FirstName" name="FirstName" class="form-control" />
+                    </div>           
+                    <div class="input-group">
+                        <span class="input-group-addon">Last Name</span>
+                        <input type="text" id="LastName" value="@Model.User.LastName" name="LastName" class="form-control" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon text-left" style="width:100%; color: red;"></span>
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Edit</button>
+                        </div>
+                    </div>
+                    <input type="hidden" value="@Model.User.Id" name="UserId" id="UserId" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div id="feedback" class='col-xs-12' style='display:none'>@Model.sts</div>

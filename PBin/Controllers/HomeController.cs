@@ -25,10 +25,10 @@ namespace PBin.Controllers
 
             if (SearchTerms == null)
             {
-                hvm.Posts = db.Post.Where(o => o.Public == true && o.Enabled == true).OrderByDescending(o => o.DateCreated).Take(10).ToList();
+                hvm.Posts = db.Post.Where(o => o.Public == true && o.Enabled == true && o.User.Active == true).OrderByDescending(o => o.DateCreated).Take(10).ToList();
             } else
             {
-                hvm.Posts = db.Post.Where(o => o.Public == true && o.Enabled == true && (o.Content.Contains(SearchTerms) || o.Title.Contains(SearchTerms))).OrderByDescending(o => o.DateCreated).Take(10).ToList();
+                hvm.Posts = db.Post.Where(o => o.Public == true && o.Enabled == true && o.User.Active == true && (o.Content.Contains(SearchTerms) || o.Title.Contains(SearchTerms))).OrderByDescending(o => o.DateCreated).Take(10).ToList();
             }
 
             return View(hvm);
@@ -53,7 +53,7 @@ namespace PBin.Controllers
         {
             User requestedUser = db.User.Where(o => o.Email == Email).FirstOrDefault();
 
-            if (requestedUser == null)
+            if (requestedUser == null || requestedUser.Active == false)
             {
                 return RedirectToAction("Login", "Home", new { sts = "Error: Could not log in" });
             }
@@ -121,13 +121,13 @@ namespace PBin.Controllers
         //Kills session and brings user to home page
         [HttpGet]
         [Route("Logout")]
-        public ActionResult Logout()
+        public ActionResult Logout(string sts)
         {
             Session["UserId"] = null;
             Session["Username"] = null;
             Session["IsAdmin"] = null;
 
-            return RedirectToAction("Home", "Home");
+            return RedirectToAction("Home", "Home", new { sts = sts});
         }     
 
         [Route("CreateAccount")]        
@@ -334,14 +334,133 @@ namespace PBin.Controllers
         }
 
         [Route("UserList")]
-        public ActionResult UserList()
+        public ActionResult UserList(string sts)
         {
             if (!AuthorizeAdmin())
             {
                 return RedirectToAction("PageNotFound", "Home");
             }
 
-            return View();
+            Guid UserRoleId = db.Role.Where(o => o.Role1 == "User").FirstOrDefault().Id;
+            Guid AdminRoleId = db.Role.Where(o=>o.Role1 == "Administrator").FirstOrDefault().Id;
+
+            UserListViewModel ulvm = new UserListViewModel()
+            {
+                Users = db.User.Where(o=>o.UserRole.Select(i=>i.RoleId).Contains(UserRoleId) && !o.UserRole.Select(i=>i.RoleId).Contains(AdminRoleId) && o.Active == true).ToList(),
+                sts = sts
+            };
+
+            return View(ulvm);
+        }
+
+        [Route("AdminDeleteUser")]
+        public ActionResult AdminDeleteUser(Guid UserId)
+        {
+            if (!AuthorizeAdmin())
+            {
+                return RedirectToAction("PageNotFound", "Home");
+            }
+
+            User userToBan = db.User.Where(o => o.Id == UserId).FirstOrDefault();
+
+            userToBan.Active = false;
+
+            db.Entry(userToBan).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("UserList", "Home", new { sts = "Could not remove user" });
+            }
+
+            return RedirectToAction("UserList", "Home", new { sts = "Successfully removed user" });
+
+        }
+
+        [Route("Settings")]
+        public ActionResult Settings(string sts)
+        {
+            if (!AuthorizeUser())
+            {
+                return RedirectToAction("Home", "Home", new { sts = "Please re-authenticate" });
+            }
+            Guid UserId = (Guid)Session["UserId"];
+
+            EditSettingsViewModel esvm = new EditSettingsViewModel()
+            {
+                sts = sts,
+                User = db.User.Where(o => o.Id == UserId).FirstOrDefault()
+            };
+    
+            return View(esvm);
+        }
+
+        [Route("EditSettings")]
+        public ActionResult EditSettings(string FirstName, string LastName, Guid UserId)
+        {
+            if (!AuthorizeUser())
+            {
+                return RedirectToAction("Home", "Home", new { sts = "Please re-authenticate" });
+            }
+
+            if ((Guid)Session["UserId"] != UserId)
+            {
+                return RedirectToAction("Logout", "Home");
+            }
+
+            User editUserSettings = db.User.Where(o => o.Id == UserId).First();
+
+            editUserSettings.FirstName = FirstName;
+            editUserSettings.LastName = LastName;
+
+            db.Entry(editUserSettings).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            } catch (Exception ex)
+            {
+                return RedirectToAction("Settings", "Home", new { sts = "Could not change settings" });
+            }
+
+            return RedirectToAction("Settings", "Home", new { sts = "Successfully changed settings" });
+
+
+        }
+
+        [Route("DeleteAccount")]
+        public ActionResult DeleteAccount(Guid UserId)
+        {
+            if (!AuthorizeUser())
+            {
+                return RedirectToAction("Home", "Home", new { sts = "Please re-authenticate" });
+            }
+
+            if ((Guid)Session["UserId"] != UserId)
+            {
+                return RedirectToAction("Logout", "Home");
+            }
+
+            User editUserSettings = db.User.Where(o => o.Id == UserId).First();
+
+            editUserSettings.Active = false;
+
+            db.Entry(editUserSettings).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Settings", "Home", new { sts = "Could not delete account" });
+            }
+
+            return RedirectToAction("Logout", "Home", new { sts = "Successfully deleted account" });
+
         }
 
         [Route("PageNotFound")]
