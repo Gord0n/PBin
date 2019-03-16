@@ -1,6 +1,6 @@
-﻿@model PBin.Models.ViewModels.HomeViewModel
-@{ 
-    ViewBag.Title = "Home";
+﻿@model PBin.Models.ViewModels.UserPostsViewModel
+@{
+    ViewBag.Title = "User Posts";
 }
 
 <div class="row">
@@ -23,33 +23,22 @@
                             }
                             else
                             {
-                                <h1><a href="@Url.Action("THING", "Home")">Untitled</a></h1>
+                                <h1><a href="@Url.Action("", "Home")">Untitled</a></h1>
                             }
                             <p>@Model.Posts[i].User.FirstName @Model.Posts[i].User.LastName @@ @Model.Posts[i].DateCreated</p>
                         </div>
                         <div class="col-xs-3 text-right">
-                            @if (Session["IsAdmin"] != null)
-                            {
-                                if ((bool)Session["IsAdmin"])
-                                {
-                                    <a href="@Url.Action("RemovePost", "Home", new { PostId = Model.Posts[i].Id })" class="btn btn-danger"> Remove Post</a>
-                                }
-                            }
+                            <a href="@Url.Action("EditPosts", "Home", new { PostId = Model.Posts[i].Id })" class="btn btn-default">Edit</a>
                         </div>
                     </div>
                   
                 </div>
                 <div class="panel-body">
                     <pre>@Model.Posts[i].Content</pre>
-                </div>               
-            </div>                
+                </div>
+            </div>
         </div>
     }
 
 </div>
 <div id="feedback" class='col-xs-12' style='display:none'>@Model.sts</div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#SearchTerms").val("@Model.SearchTerms");
-    });
-</script>

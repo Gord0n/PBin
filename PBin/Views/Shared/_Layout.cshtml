@@ -10,7 +10,6 @@
 </head>
 <body>
     <script src="~/Scripts/jquery-3.3.1.js"></script>
-    <script src="~/Scripts/CustomScript.js"></script>
     <script src="~/Scripts/PScript.js"></script>
     <div class="container body-content">
         <nav class="navbar navbar-default">
@@ -20,7 +19,7 @@
                     @{
                         if (Session["UserId"] != null)
                         {
-                            <li><a href="#">@Session["Username"]</a></li>
+                            <li><a href="@Url.Action("UserPosts", "Home", new { UserId = Session["UserId"] })"><span class="glyphicon glyphicon-th-list"></span> @Session["Username"]</a></li>
                             <li><a href="@Url.Action("CreatePost", "Home")"><span class="glyphicon glyphicon-plus-sign"></span> Create Paste</a></li>
                         }
                     }
@@ -48,13 +47,14 @@
 
 
                 </ul>
-                <form class="navbar-form navbar-right" role="search">
+                @using (Html.BeginForm("Home", "Home", FormMethod.Post, new { @id = "SearchPostForm", enctype = "multipart-form-data", @class= "navbar-form navbar-right" }))
+                {
                     <div class="form-group">
-                        <input type="text" class="form-control" />
+                        <input type="text" name="SearchTerms" id="SearchTerms" class="form-control" />
                     </div>
-                    <button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-                </form>
-            </div>
+                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                }
+                </div>
         </nav>
 
     </div>

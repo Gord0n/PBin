@@ -29,8 +29,8 @@ CREATE TABLE [Post] (
 	[Content] VARCHAR(1024),
 	[DateCreated] DATETIME,	
 	[DateExpires] DATETIME,
-	[Public] BIT,
-	[Enabled] BIT
+	[Public] BIT NOT NULL,
+	[Enabled] BIT NOT NULL
 );
 
 CREATE TABLE [WatchWord] (

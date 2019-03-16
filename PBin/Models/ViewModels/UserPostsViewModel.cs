@@ -5,14 +5,12 @@ using System.Web;
 
 namespace PBin.Models.ViewModels
 {
-    public class HomeViewModel
+    public class UserPostsViewModel
     {
 
         public string sts { get; set; }
 
-        public string SearchTerms { get; set; }
-
-        public List<Post> Posts { get; set; }        
+        public List<Post> Posts { get; set; }
 
     }
 }

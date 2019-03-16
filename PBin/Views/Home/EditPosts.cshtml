@@ -1,0 +1,56 @@
+﻿@model PBin.Models.ViewModels.EditPostViewModel
+@{
+    ViewBag.Title = "Edit Posts";
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-9">
+                        <h1>Edit your paste</h1>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <button type="button" id="deletePostButton" class="btn btn-warning">Delete Post</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("EditPosts", "Home", FormMethod.Post, new { @id = "editPostForm", enctype = "multipart-form-data" }))
+                {
+                    <div class="input-group">
+                        <span class="input-group-addon">Title</span>
+                        <input type="text" id="Post_Title" value="@Model.Post.Title" name="Post.Title" class="form-control" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Content</span>
+                        <textarea class="form-control" id="Post_Content" name="Post.Content" maxlength="1024">@Model.Post.Content</textarea>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Expire</span>
+                        <input type="date" class="form-control" value="@Model.Post.DateExpires" id="Post_DateExpires" name="Post.DateExpires" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Public</span>
+                        <input type="checkbox" id="EditPublicPostCheckBox" @Model.checkBoxValue name="EditPublicPostCheckBox" class="form-control" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon text-left" style="width:100%; color: red;"></span>
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Edit</button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="Post_Id" name="Post.Id" value="@Model.Post.Id" />
+                    <input type="hidden" value="true" id="Post_Public" name="Post.Public" />
+                    <input type="hidden" id="Post_UserId" name="Post.UserId" value="@Model.Post.UserId" />
+                    <input type="hidden" id="Post_DateCreated" name="Post.DateCreated" value="@Model.Post.DateCreated" />
+                    <input type="hidden" id="Post_DateExpires" name="Post.DateExpires" value="@Model.Post.DateExpires" />
+                    <input type="hidden" id="Post_Enabled" name="Post.Enabled" value="@Model.postEnabled" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div id="feedback" class='col-xs-12' style='display:none'>@Model.sts</div>

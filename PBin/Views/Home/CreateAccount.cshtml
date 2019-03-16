@@ -23,18 +23,20 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">First Name</span>
-                        <input type="text" class="form-control" id="NewUser_FirstName" name="NewUser.FirstName" value="@Model.NewUser.FirstName" />
+                        <input type="text" class="form-control" id="NewUser_FirstName" name="NewUser.FirstName" maxlength="32" value="@Model.NewUser.FirstName" />
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">Last Name</span>
-                        <input type="text" class="form-control" id="NewUser_LastName" name="NewUser.LastName" value="@Model.NewUser.LastName" />
-                    </div>
+                        <input type="text" class="form-control" id="NewUser_LastName" name="NewUser.LastName" maxlength="32" value="@Model.NewUser.LastName" />
+                    </div>                   
                     <div class="input-group">
-                        <span class="input-group-addon text-left" style="width:100%; color: red;"></span>
+                        <span class="input-group-addon text-left" style="width:100%; color: red;"></span>                                            
                         <div class="input-group-btn">
+                         
                             <button type="submit" class="btn btn-primary" id="CreateUserButton">Create</button>
                         </div>
                     </div>
+                    
                 }
             </div>
         </div>

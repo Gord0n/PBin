@@ -2,6 +2,7 @@
 using PBin.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,11 +19,17 @@ namespace PBin.Controllers
         [Route("Home")]
     
         [Route("~/", Name = "default")]
-        public ActionResult Home(string sts)
+        public ActionResult Home(string sts, string SearchTerms)
         {
-            HomeViewModel hvm = new HomeViewModel() { sts = sts };
+            HomeViewModel hvm = new HomeViewModel() { sts = sts, SearchTerms = SearchTerms ?? "" };
 
-            hvm.Posts = db.Post.Where(o=>o.Public == true).OrderByDescending(o=>o.DateCreated).Take(10).ToList();            
+            if (SearchTerms == null)
+            {
+                hvm.Posts = db.Post.Where(o => o.Public == true && o.Enabled == true).OrderByDescending(o => o.DateCreated).Take(10).ToList();
+            } else
+            {
+                hvm.Posts = db.Post.Where(o => o.Public == true && o.Enabled == true && (o.Content.Contains(SearchTerms) || o.Title.Contains(SearchTerms))).OrderByDescending(o => o.DateCreated).Take(10).ToList();
+            }
 
             return View(hvm);
         }
@@ -59,8 +66,20 @@ namespace PBin.Controllers
             if (providedPassword.Equals(userPassword))
             {
                 Session["UserId"] = requestedUser.Id;
-                Session["Username"] = requestedUser.FirstName + " " + requestedUser.LastName;
+                string fullName = requestedUser.FirstName + " " + requestedUser.LastName;
 
+                if (fullName.Length > 12)
+                {
+                    if (requestedUser.FirstName.Length >= 12)
+                    {
+                        fullName = requestedUser.FirstName[0] + " " + requestedUser.LastName[0];
+                    } else {
+                        fullName = requestedUser.FirstName + " " + requestedUser.LastName[0];
+                    }
+                }
+
+                Session["Username"] = fullName;
+                
                 List<UserRole> userRoles = db.UserRole.Where(o => o.UserId == requestedUser.Id).ToList();
                 Guid adminRoleId = db.Role.Where(o => o.Role1 == "Administrator").FirstOrDefault().Id;
 
@@ -78,6 +97,26 @@ namespace PBin.Controllers
                 return RedirectToAction("Login", "Home", new { sts = "Error: Could not log in" });
             }            
         }    
+
+        [Route("RemovePost")]
+        public ActionResult RemovePost(Guid PostId)
+        {
+            Post removePost = db.Post.Where(o => o.Id == PostId).FirstOrDefault();
+
+            removePost.Enabled = false;
+
+            db.Entry(removePost).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            } catch (Exception ex)
+            {
+                return RedirectToAction("Home", "Home", new { sts = "Could not remove post" });
+            }            
+
+            return RedirectToAction("Home", "Home", new { sts = "Successfully removed post" });
+        }
 
         //Kills session and brings user to home page
         [HttpGet]
@@ -161,10 +200,10 @@ namespace PBin.Controllers
             } catch (Exception ex)
             {
                 //Log here
-                return RedirectToAction("Login", "Home"); //Need to add status errors
+                return RedirectToAction("CreateAccount", "Home", new { sts = "Error: Could not create account"  }); 
             }
            
-            return RedirectToAction("Login", "Home");
+            return RedirectToAction("Login", "Home", new { sts = "Successfully created account." });
         }
 
         //https://dotnetcodr.com/2016/10/05/generate-truly-random-cryptographic-keys-using-a-random-number-generator-in-net/
@@ -199,10 +238,9 @@ namespace PBin.Controllers
 
             NewPost.Id = Guid.NewGuid();
             NewPost.DateCreated = DateTime.Now;
-            NewPost.Public = true;
             NewPost.Enabled = true;
-            NewPost.UserId = (Guid)Session["UserId"];            
-
+            NewPost.UserId = (Guid)Session["UserId"];
+            //NewPost.Public = true;
             db.Post.Add(NewPost);
 
             try
@@ -216,6 +254,83 @@ namespace PBin.Controllers
 
 
             return RedirectToAction("UserPosts", "Home");
+        }  
+
+        [Route("UserPosts")]
+        public ActionResult UserPosts(Guid UserId)
+        {
+            if (!AuthorizeUser())
+            {
+                return RedirectToAction("Home", "Home", new { sts = "Please re-authenticate"});
+            }
+
+            Guid SessionUserId = (Guid)Session["UserId"];
+
+            if (SessionUserId != UserId)
+            {
+                return RedirectToAction("Home", "Home", new { sts = "Error: Could not find user posts" });
+            }
+
+            UserPostsViewModel upvm = new UserPostsViewModel()
+            {
+                Posts = db.Post.Where(o => o.UserId == UserId && o.Enabled == true).OrderByDescending(o=>o.DateCreated).ToList()
+            };            
+
+            return View(upvm);
+        }
+
+        [Route("EditPosts")]
+        public ActionResult EditPosts(Guid PostId, string sts)
+        {
+            if (!AuthorizeUser())
+            {
+                return RedirectToAction("Home", "Home", new { sts = "Please re-authenticate" });
+            }
+
+            Guid CurrentUserId = (Guid)Session["UserId"];
+
+            EditPostViewModel epvm = new EditPostViewModel() {
+                Post = db.Post.Where(o => o.Id == PostId && o.UserId == CurrentUserId).FirstOrDefault(),
+                sts = sts
+            };
+
+            if ((bool)epvm.Post.Public)
+            {
+                epvm.checkBoxValue = "checked";
+            } else
+            {
+                epvm.checkBoxValue = "";
+            }
+
+            if ((bool)epvm.Post.Enabled)
+            {
+                epvm.postEnabled = "True";
+            } else
+            {
+                epvm.postEnabled = "False";
+            }
+
+            return View(epvm);
+        }
+
+        [Route("EditPosts")]
+        [HttpPost]
+        public ActionResult EditPosts(Post Post) 
+        {
+            db.Entry(Post).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            } catch (Exception ex)
+            {
+                return RedirectToAction("EditPosts", "Home", new { PostId = Post.Id, sts = "An error occurred." });
+            }
+            if (!(bool)Post.Enabled)
+            {
+                return RedirectToAction("UserPosts", "Home", new { UserId = Post.UserId, sts = "Successfully removed post" });
+            }
+            return RedirectToAction("EditPosts", "Home", new { PostId = Post.Id, sts = "Successfully altered post" });
         }
 
         [Route("UserList")]

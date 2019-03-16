@@ -24,11 +24,16 @@
                         <input type="date" class="form-control" id="NewPost_DateExpires" name="NewPost.DateExpires" />
                     </div>
                     <div class="input-group">
+                        <span class="input-group-addon">Public</span>
+                        <input type="checkbox" id="PublicPostCheckBox" checked name="PublicPostCheckBox" class="form-control"/>
+                    </div>
+                    <div class="input-group">
                         <span class="input-group-addon text-left" style="width:100%; color: red;"></span>
                         <div class="input-group-btn">
                             <button type="submit" class="btn btn-primary">Post</button>
                         </div>
                     </div>
+                    <input type="hidden" value="true" id="NewPost_Public" name="NewPost.Public" />
                 }
             </div>
         </div>      

@@ -8,7 +8,18 @@ SELECT * FROM [Role];
 
 SELECT * FROM [UserRole];
 
+
 /*
+INSERT INTO [Role] VALUES (
+	NEWID(),
+	'Administrator'
+);
+
+INSERT INTO [Role] VALUES (
+	NEWID(),
+	'User'
+);
+
 --Admin
 INSERT INTO [UserRole] VALUES (
 	NEWID(),
