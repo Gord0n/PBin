@@ -5,5 +5,5 @@ Features
   * Secure Create Account
   * Administrator Functions
   * Create, make and share posts
-  * * Modify your account settings
+  * Modify your account settings
   * Delete your account
